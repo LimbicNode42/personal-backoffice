@@ -1,38 +1,48 @@
-.App {
-  text-align: center;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #EBE8E2;  /* Adjust this to match the background of your app */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+nav {
+  opacity: 1;
+  padding: 5vh 0;  /* Add padding to make the navbar taller */
+  width: 100%;
+  box-shadow: none;  /* Remove the shadow to make the navbar blend */
+  border-bottom: none;  /* Optional: subtle border for slight separation */
+  padding-bottom: 5vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+nav ul {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: center; /* Center the links */
+  align-items: center; /* Vertically align the links */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-.App-link {
-  color: #61dafb;
+nav ul li {
+  margin: 0 20px;  /* Add space between each link */
 }
 
-@keyframes App-logo-spin {
+nav ul li a {
+  text-decoration: none;
+  color: #333;  /* Dark text for the links */
+  font-size: 18px;
+  padding: 5px 15px;  /* Add padding around the links */
+  border-radius: 5px; /* Optional: rounded corners */
+}
+
+nav ul li a:hover {
+  background-color: #ddd;  /* Light background color on hover */
+}
+
+/* @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
-}
+} */

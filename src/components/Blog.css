@@ -1,0 +1,51 @@
+.Blog {
+  text-align: center;
+}
+
+.Blog-header {
+  /* min-height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Me */
+.Blog-header .header-image {
+  border-radius: 50%;
+  height: 25vmin;
+}
+
+/* Diarrhea */
+.info-line {
+  margin-bottom: 0.1em;  /* Adds padding between each line */
+  display: flex;        /* Ensures the bold text and images align horizontally */
+  align-items: center;  /* Vertically centers the images with the text */
+}
+
+.info-line b {
+  margin-right: 5px; /* Adds some space between the bold text and the rest of the text */
+}
+
+.inline-image {
+  vertical-align: middle;  /* Aligns image vertically with the text */
+  height: 1em;             /* Ensures the image height matches the text size */
+  width: auto;             /* Maintains aspect ratio */
+  margin-left: 0.5em;        /* Adds space between the text and image */
+}
+
+/* Socials */
+.socials {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.icon-with-arrow {
+  padding-inline: 1em;
+}
+
+.icon-with-arrow a {
+  color: black;
+}
