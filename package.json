@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.13.1",
     "@radix-ui/react-dialog": "^1.1.6",
     "cra-template": "1.2.0",
+    "graphql": "^16.10.0",
+    "keycloak-js": "^26.1.2",
     "lucide-react": "^0.475.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
