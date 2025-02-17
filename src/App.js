@@ -1,8 +1,8 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-import Blog from './Blog';
-import ProtectedRoute from '../auth/Protect'
+import Blog from './blog/Blog';
+import ProtectedRoute from './auth/Protect'
 
 function App() {
   return (
