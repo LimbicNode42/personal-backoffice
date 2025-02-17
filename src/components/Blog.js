@@ -4,12 +4,39 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { useAuth } from "../auth/Login";
+
+const CREATE_POST = gql`
+mutation CreatePost($input: NewPost!) {
+  createPost(input: $input) {
+      id
+      published
+      title
+      text
+      attachments
+      tags
+  }
+}
+`;
+
+const GET_POSTS = gql`
+query Posts {
+  posts {
+    id
+    published
+    title
+    text
+  }
+}
+`;
 
 function Blog() {
   // Flags to detect whether createPost modal is open
   const [isOpen, setIsOpen] = useState(false);
+
+  const { token } = useAuth(); // Get token from context
+  const { loading, error, data, refetch } = useQuery(GET_POSTS);
 
   return (
     <div className='Blog'>
@@ -23,20 +50,24 @@ function Blog() {
           Create Post
         </button>
 
-        <BlogList />
+        <BlogList token={token} loading={loading} error={error} data={data} refetch={refetch} />
 
-        <CreatePostModal open={isOpen} onOpenChange={setIsOpen} />
+        <CreatePostModal token={token} open={isOpen} onOpenChange={setIsOpen} refetch={refetch} />
       </header>
     </div>
   );
 }
 export default Blog;
 
-function CreatePostModal({ open, onOpenChange }) {
+function CreatePostModal({ token, open, onOpenChange, refetch }) {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const availableTags = ["Coding", "System_Architecture", "Book"];
   const [selectedTags, setSelectedTags] = useState([]);
   const [images, setImages] = useState([]);
-
-  const availableTags = ["Tech", "Lifestyle", "Business", "Personal", "Travel", "Food"];
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [createPost] = useMutation(CREATE_POST);
 
   const handleTagSelection = (e) => {
     const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
@@ -46,6 +77,38 @@ function CreatePostModal({ open, onOpenChange }) {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages([...images, ...files]);
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await createPost({
+        variables: {
+          input: {
+            title,
+            text: content,
+          },
+        },
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
+
+      console.log("Post submitted successfully:", data);
+
+      if (refetch) refetch();
+
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Submission error:", err);
+      setError("Failed to submit post. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -69,6 +132,8 @@ function CreatePostModal({ open, onOpenChange }) {
               type="text" 
               className="border p-2 w-full rounded" 
               placeholder="Enter blog title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
 
             {/* Blog Post Content */}
@@ -76,6 +141,8 @@ function CreatePostModal({ open, onOpenChange }) {
             <textarea 
               className="blog-textarea" 
               placeholder="Write your blog post here..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
             />
 
             {/* Multi-Select Dropdown for Tags */}
@@ -119,7 +186,8 @@ function CreatePostModal({ open, onOpenChange }) {
         <div className="modal-footer">
           <button 
             className="bg-blue-500 text-white px-4 py-2 rounded"
-            onClick={() => onOpenChange(false)}
+            onClick={handleSubmit}
+            disabled={loading}
           >
             Submit Post
           </button>
@@ -129,20 +197,7 @@ function CreatePostModal({ open, onOpenChange }) {
   );
 }
 
-const BlogList = () => {
-  const GET_POSTS = gql`
-    query Posts {
-      posts {
-        id
-        published
-        title
-        text
-      }
-    }
-  `;
-
-  const { token } = useAuth(); // Get token from context
-  const { loading, error, data, refetch } = useQuery(GET_POSTS);
+const BlogList = ({token, loading, error, data, refetch}) => {
 
   // Refetch data when the token is set
   useEffect(() => {
