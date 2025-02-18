@@ -48,6 +48,7 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
             input: {
               title,
               text: content,
+              tags: selectedTags,
             },
           },
           context: {

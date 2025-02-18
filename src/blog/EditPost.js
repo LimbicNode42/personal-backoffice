@@ -17,6 +17,19 @@ mutation EditPost($input: EditPost!) {
 }
 `;
 
+const DELETE_POST = gql`
+mutation DeletePost($input: DeletePost!) {
+  deletePost(input: $input) {
+      id
+      published
+      title
+      text
+      attachments
+      tags
+  }
+}
+`;
+
 function EditPostModal({ post, token, refetch, onClose }) {
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.text);
@@ -27,6 +40,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editPost] = useMutation(EDIT_POST);
+  const [deletePost] = useMutation(DELETE_POST);
 
   useEffect(() => {
     if (post) {
@@ -60,6 +74,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
             published,
             title,
             text: content,
+            tags: selectedTags,
           },
         },
         context: {
@@ -70,6 +85,37 @@ function EditPostModal({ post, token, refetch, onClose }) {
       });
 
       console.log("Post updated successfully:", data);
+
+      if (refetch) refetch();
+
+      onClose();
+    } catch (err) {
+      console.error("Update error:", err);
+      setError("Failed to update post. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await deletePost({
+        variables: {
+          input: {
+            id: post.id,
+          },
+        },
+        context: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      });
+
+      console.log("Post deleted successfully:", data);
 
       if (refetch) refetch();
 
@@ -113,15 +159,18 @@ function EditPostModal({ post, token, refetch, onClose }) {
             onChange={(e) => setContent(e.target.value)}
           />
 
-          {/* Tags */}
-          {selectedTags && selectedTags.length > 0 && (
-            <>
-              <label className="block text-sm font-medium">Tags</label>
-              <div className="border p-2 w-full rounded">
-                {selectedTags.join(", ")}
-              </div>
-            </>
-          )}
+          {/* Multi-Select Dropdown for Tags */}
+          <label className="block text-sm font-medium">Tags</label>
+          <select 
+            multiple 
+            className="border p-2 w-full rounded"
+            value={selectedTags}
+            onChange={handleTagSelection}
+          >
+            {availableTags.map(tag => (
+              <option key={tag} value={tag}>{tag}</option>
+            ))}
+          </select>
 
           {/* Attachments */}
           {images && images.length > 0 && (
@@ -141,6 +190,13 @@ function EditPostModal({ post, token, refetch, onClose }) {
         </div>
 
         {/* Modal Footer */}
+        <div className="modal-footer">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={handleDelete}
+              disabled={loading}>
+            Delete
+          </button>
+        </div>
         <div className="modal-footer">
           <button className="bg-blue-500 text-white px-4 py-2 rounded"
               onClick={handleSubmit}

@@ -14,6 +14,8 @@ query Posts {
     published
     title
     text
+    tags
+    attachments
   }
 }
 `;
