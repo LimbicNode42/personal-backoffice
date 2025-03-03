@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.13.1",
     "@radix-ui/react-dialog": "^1.1.6",
+    "apollo-upload-client": "^18.0.1",
     "cra-template": "1.2.0",
     "graphql": "^16.10.0",
     "keycloak-js": "^26.1.2",
@@ -12,14 +13,14 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "test": "react-scripts --openssl-legacy-provider test",
+    "eject": "react-scripts --openssl-legacy-provider eject"
   },
   "eslintConfig": {
     "extends": [

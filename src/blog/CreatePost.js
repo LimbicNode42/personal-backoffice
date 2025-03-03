@@ -12,8 +12,8 @@ mutation CreatePost($input: NewPost!) {
       published
       title
       text
-      attachments
       tags
+      attachments
   }
 }
 `;
@@ -34,9 +34,9 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
     };
   
     const handleImageUpload = (e) => {
-      const files = Array.from(e.target.files);
-      setImages([...images, ...files]);
+      setImages((prevImages) => [...prevImages, ...Array.from(e.target.files)]);
     };
+    
   
     const handleSubmit = async () => {
       setLoading(true);
@@ -49,6 +49,7 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
               title,
               text: content,
               tags: selectedTags,
+              attachments: images.map((file) => file),
             },
           },
           context: {
@@ -130,11 +131,11 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
   
               {/* Image Previews */}
               <div className="image-preview-container">
-                {images.map((img, index) => (
+                {images.map((img) => (
                   <img 
-                    key={index} 
+                    key={img} 
                     src={URL.createObjectURL(img)} 
-                    alt={`upload-${index}`} 
+                    alt={`upload-${img}`} 
                     className="image-preview"
                   />
                 ))}

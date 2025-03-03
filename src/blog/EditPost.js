@@ -11,8 +11,8 @@ mutation EditPost($input: EditPost!) {
       published
       title
       text
-      attachments
       tags
+      attachments
   }
 }
 `;
@@ -24,8 +24,8 @@ mutation DeletePost($input: DeletePost!) {
       published
       title
       text
-      attachments
       tags
+      attachments
   }
 }
 `;
