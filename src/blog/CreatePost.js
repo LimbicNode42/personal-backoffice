@@ -34,9 +34,16 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
     };
   
     const handleImageUpload = (e) => {
-      setImages((prevImages) => [...prevImages, ...Array.from(e.target.files)]);
+      const newImages = Array.from(e.target.files).map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+      }));
+      setImages((prevImages) => [...prevImages, ...newImages]);
     };
     
+    const removeImage = (url) => {
+      setImages((prevImages) => prevImages.filter((img) => img.url !== url));
+    };
   
     const handleSubmit = async () => {
       setLoading(true);
@@ -49,7 +56,7 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
               title,
               text: content,
               tags: selectedTags,
-              attachments: images.map((file) => file),
+              attachments: images.map((img) => img.file),
             },
           },
           context: {
@@ -131,13 +138,16 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
   
               {/* Image Previews */}
               <div className="image-preview-container">
-                {images.map((img) => (
-                  <img 
-                    key={img} 
-                    src={URL.createObjectURL(img)} 
-                    alt={`upload-${img}`} 
-                    className="image-preview"
-                  />
+                {images.map((img, index) => (
+                  <div key={img.url} className="image-wrapper">
+                    <button 
+                      className="remove-button" 
+                      onClick={() => removeImage(img.url)}
+                    >
+                      ❌
+                    </button>
+                    <img src={img.url} alt={`upload-${index}`} className="image-preview" />
+                  </div>
                 ))}
               </div>
             </form>
