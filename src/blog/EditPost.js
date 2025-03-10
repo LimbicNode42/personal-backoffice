@@ -31,12 +31,13 @@ mutation DeletePost($input: DeletePost!) {
 `;
 
 function EditPostModal({ post, token, refetch, onClose }) {
+  const cdnBaseUrl = 'https://cdn.wheeler-network.com/';
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.text);
   const [published, setPublished] = useState(post.published);
   const availableTags = ["Coding", "System_Architecture", "Book"];
   const [selectedTags, setSelectedTags] = useState(post.tags);
-  const [images, setImages] = useState(post.attachments);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [editPost] = useMutation(EDIT_POST);
@@ -48,7 +49,13 @@ function EditPostModal({ post, token, refetch, onClose }) {
       setContent(post.text || "");
       setPublished(post.published || false);
       setSelectedTags(post.tags || []);
-      setImages(post.attachments || []);
+
+      const existingImages = (post.attachments || []).map((path) => ({
+        url: `${cdnBaseUrl}${path}`,
+        isNew: false, // Mark existing images
+      }));
+  
+      setImages(existingImages);
     }
   }, [post]); // Runs whenever `post` changes
 
@@ -58,8 +65,16 @@ function EditPostModal({ post, token, refetch, onClose }) {
   };
 
   const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setImages([...images, ...files]);
+    const newImages = Array.from(e.target.files).map((file) => ({
+      file,
+      url: URL.createObjectURL(file),
+      isNew: true, // Mark new uploads
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+  
+  const removeImage = (url) => {
+    setImages((prevImages) => prevImages.filter((img) => img.url !== url));
   };
 
   const handleSubmit = async () => {
@@ -75,6 +90,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
             title,
             text: content,
             tags: selectedTags,
+            attachments: images.map((img) => img.file),
           },
         },
         context: {
@@ -106,6 +122,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
         variables: {
           input: {
             id: post.id,
+            title: post.title,
           },
         },
         context: {
@@ -172,21 +189,34 @@ function EditPostModal({ post, token, refetch, onClose }) {
             ))}
           </select>
 
-          {/* Attachments */}
-          {images && images.length > 0 && (
-            <>
-              <label className="block text-sm font-medium">Attachments</label>
-              <ul className="list-disc pl-5">
-                {images.map((file, index) => (
-                  <li key={index}>
-                    <a href={file} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-                      {file}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
+          {/* Image Upload */}
+          <label className="block text-sm font-medium">Attach Images</label>
+          <input 
+            type="file" 
+            multiple 
+            accept="image/*" 
+            className="border p-2 w-full rounded"
+            onChange={handleImageUpload}
+          />
+
+          {/* Image Previews */}
+          <div className="image-preview-container">
+            {images.map((img, index) => (
+              <div key={img.url} className="image-wrapper">
+                <button 
+                  className="remove-button" 
+                  onClick={() => removeImage(img.url)}
+                >
+                  ❌
+                </button>
+                <img
+                  src={img.url}
+                  alt={`Attachment ${index + 1}`}
+                  style={{ maxWidth: '100%', height: 'auto' }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Modal Footer */}
