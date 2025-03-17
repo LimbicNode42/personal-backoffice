@@ -52,6 +52,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
 
       const existingImages = (post.attachments || []).map((path) => ({
         url: `${cdnBaseUrl}${path}`,
+        originalPath: `${path}`,
         isNew: false, // Mark existing images
       }));
   
@@ -74,12 +75,36 @@ function EditPostModal({ post, token, refetch, onClose }) {
   };
   
   const removeImage = (url) => {
-    setImages((prevImages) => prevImages.filter((img) => img.url !== url));
+    setImages((prevImages) => 
+      prevImages.map((img) => {
+        if (img.url === url) {
+          if (img.isNew) {
+            return null; // Remove new images from state
+          } else {
+            // Mark existing image for deletion
+            return { ...img, markedForDelete: true };
+          }
+        }
+        return img;
+      }).filter(Boolean) // Filter out `null` values for new images
+    );
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     setError(null);
+
+    const existingImagePaths = images
+      .filter((img) => !img.isNew && !img.markedForDelete)
+      .map((img) => img.originalPath);
+
+    const deletedImagePaths = images
+      .filter((img) => !img.isNew && img.markedForDelete)
+      .map((img) => img.originalPath);
+
+    const newImages = images
+      .filter((img) => img.isNew)
+      .map((img) => img.file);
 
     try {
       const { data } = await editPost({
@@ -90,7 +115,9 @@ function EditPostModal({ post, token, refetch, onClose }) {
             title,
             text: content,
             tags: selectedTags,
-            attachments: images.map((img) => img.file),
+            unchangedAttachments: existingImagePaths,
+            newAttachments: newImages,
+            deletedAttachments: deletedImagePaths
           },
         },
         context: {
@@ -201,7 +228,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
 
           {/* Image Previews */}
           <div className="image-preview-container">
-            {images.map((img, index) => (
+            {images.filter((img) => !img.markedForDelete).map((img, index) => (
               <div key={img.url} className="image-wrapper">
                 <button 
                   className="remove-button" 
