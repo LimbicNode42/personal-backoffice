@@ -79,3 +79,7 @@ ul {
   border-radius: 5px;
   border: 1px solid #ddd;
 }
+
+.inline-buttons {
+  margin: 10px
+}

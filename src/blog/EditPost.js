@@ -90,7 +90,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
     );
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (publish) => {
     setLoading(true);
     setError(null);
 
@@ -105,6 +105,10 @@ function EditPostModal({ post, token, refetch, onClose }) {
     const newImages = images
       .filter((img) => img.isNew)
       .map((img) => img.file);
+
+    if (publish) {
+      setPublished(publish);
+    }
 
     try {
       const { data } = await editPost({
@@ -178,7 +182,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
       <Dialog.Content className="radix-content">
         {/* Modal Header */}
         <div className="modal-header">
-          <Dialog.Title className="text-lg font-semibold">View Blog Post</Dialog.Title>
+          <Dialog.Title className="text-lg font-semibold">Edit Blog Post</Dialog.Title>
           <Dialog.Close className="cursor-pointer">
             <X size={24} onClick={onClose} />
           </Dialog.Close>
@@ -187,44 +191,40 @@ function EditPostModal({ post, token, refetch, onClose }) {
         {/* Modal Body */}
         <div className="modal-body">
           {/* Blog Post Title */}
-          <label className="block text-sm font-medium">Title</label>
-          <input 
-            type="text" 
-            className="border p-2 w-full rounded" 
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <div>
+            <label className="block text-sm font-medium">Title: </label>
+            <input 
+              type="text" 
+              className="border p-2 w-full rounded" 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <br></br>
 
           {/* Blog Post Content */}
-          <label className="block text-sm font-medium">Content</label>
-          <textarea 
-            className="blog-textarea" 
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
-
-          {/* Multi-Select Dropdown for Tags */}
-          <label className="block text-sm font-medium">Tags</label>
-          <select 
-            multiple 
-            className="border p-2 w-full rounded"
-            value={selectedTags}
-            onChange={handleTagSelection}
-          >
-            {availableTags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-sm font-medium">Content</label>
+            <textarea 
+              className="blog-textarea" 
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
+          </div>
+          <br></br>
 
           {/* Image Upload */}
-          <label className="block text-sm font-medium">Attach Images</label>
-          <input 
-            type="file" 
-            multiple 
-            accept="image/*" 
-            className="border p-2 w-full rounded"
-            onChange={handleImageUpload}
-          />
+          <div>
+            <label className="block text-sm font-medium">Attach Images: </label>
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*" 
+              className="border p-2 w-full rounded"
+              onChange={handleImageUpload}
+            />
+          </div>
+          <br></br>
 
           {/* Image Previews */}
           <div className="image-preview-container">
@@ -238,31 +238,50 @@ function EditPostModal({ post, token, refetch, onClose }) {
                 </button>
                 <img
                   src={img.url}
+                  title={img.url}
                   alt={`Attachment ${index + 1}`}
                   style={{ maxWidth: '100%', height: 'auto' }}
                 />
               </div>
             ))}
           </div>
+          <br></br>
+
+          {/* Multi-Select Dropdown for Tags */}
+          <div>
+            <label className="block text-sm font-medium">Tags</label><br></br>
+            <select 
+              multiple 
+              className="border p-2 w-full rounded"
+              value={selectedTags}
+              onChange={handleTagSelection}
+            >
+              {availableTags.map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Modal Footer */}
         <div className="modal-footer">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded"
+          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
               onClick={handleDelete}
               disabled={loading}>
             Delete
           </button>
-        </div>
-        <div className="modal-footer">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded"
-              onClick={handleSubmit}
+          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
+              onClick={() => handleSubmit(false)}
               disabled={loading}>
             Update
           </button>
-        </div>
-        <div className="modal-footer">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={onClose}>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
+              onClick={() => handleSubmit(true)}
+              disabled={loading}>
+            Publish
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
+              onClick={onClose}>
             Close
           </button>
         </div>
