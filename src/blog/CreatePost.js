@@ -95,46 +95,42 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
           <div className="modal-body">
             <form className="space-y-4">
               {/* Blog Post Title */}
-              <label className="block text-sm font-medium">Title</label>
-              <input 
-                type="text" 
-                className="border p-2 w-full rounded" 
-                placeholder="Enter blog title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+              <div>
+                <label className="block text-sm font-medium">Title: </label>
+                <input 
+                  type="text" 
+                  className="border p-2 w-full rounded" 
+                  placeholder="Enter blog title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <br></br>
   
               {/* Blog Post Content */}
-              <label className="block text-sm font-medium">Content</label>
-              <textarea 
-                className="blog-textarea" 
-                placeholder="Write your blog post here..."
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-  
-              {/* Multi-Select Dropdown for Tags */}
-              <label className="block text-sm font-medium">Tags</label>
-              <select 
-                multiple 
-                className="border p-2 w-full rounded"
-                value={selectedTags}
-                onChange={handleTagSelection}
-              >
-                {availableTags.map(tag => (
-                  <option key={tag} value={tag}>{tag}</option>
-                ))}
-              </select>
+              <div>
+                <label className="block text-sm font-medium">Content</label>
+                <textarea 
+                  className="blog-textarea" 
+                  placeholder="Write your blog post here..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </div>
+              <br></br>
   
               {/* Image Upload */}
-              <label className="block text-sm font-medium">Attach Images</label>
-              <input 
-                type="file" 
-                multiple 
-                accept="image/*" 
-                className="border p-2 w-full rounded"
-                onChange={handleImageUpload}
-              />
+              <div>
+                <label className="block text-sm font-medium">Attach Images: </label>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*" 
+                  className="border p-2 w-full rounded"
+                  onChange={handleImageUpload}
+                />
+              </div>
+              <br></br>
   
               {/* Image Previews */}
               <div className="image-preview-container">
@@ -150,17 +146,32 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
                   </div>
                 ))}
               </div>
+
+              {/* Multi-Select Dropdown for Tags */}
+              <div>
+                <label className="block text-sm font-medium">Tags</label><br></br>
+                <select 
+                  multiple 
+                  className="border p-2 w-full rounded"
+                  value={selectedTags}
+                  onChange={handleTagSelection}
+                >
+                  {availableTags.map(tag => (
+                    <option key={tag} value={tag}>{tag}</option>
+                  ))}
+                </select>
+              </div>
             </form>
           </div>
   
           {/* Modal Footer */}
           <div className="modal-footer">
             <button 
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
               onClick={handleSubmit}
               disabled={loading}
             >
-              Submit Post
+              Submit
             </button>
           </div>
         </Dialog.Content>
