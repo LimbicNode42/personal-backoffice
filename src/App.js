@@ -11,7 +11,12 @@ function App() {
         <nav className="w-full py-[5vh]">
           <ul className="flex justify-center items-center list-none p-0 m-0">
             <li className="mx-5">
-              <Link to="/" className="text-gray-900 text-lg px-4 py-1 rounded hover:bg-gray-200 no-underline">
+              <Link to="/" 
+                onClick={() => {
+                  sessionStorage.removeItem("returnToModal");
+                  sessionStorage.removeItem("returnPost");
+                }}
+                className="text-gray-900 text-lg px-4 py-1 rounded hover:bg-gray-200 no-underline">
                 Blog
               </Link>
             </li>
