@@ -157,7 +157,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
     sessionStorage.setItem("returnToModal", "true");
     sessionStorage.setItem("returnPost", JSON.stringify(previewPost));
 
-    navigate('/preview', { state: { post: previewPost, returnToModal: true } });
+    navigate('/blog-post-preview', { state: { post: previewPost, returnToModal: true } });
   };
 
   const handleDelete = async () => {

@@ -26,7 +26,7 @@ function App() {
         <main className="flex justify-center items-start p-4">
           <Routes>
             <Route path="/" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
-            <Route path="/preview" element={<ProtectedRoute><PreviewPost /></ProtectedRoute>} />
+            <Route path="/blog-post-preview" element={<ProtectedRoute><PreviewPost /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
