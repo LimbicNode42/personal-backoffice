@@ -1,5 +1,6 @@
 import './EditPost.css'
 import React, {useState, useEffect} from "react";
+import { useNavigate } from 'react-router-dom';
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { gql, useMutation } from "@apollo/client";
@@ -31,6 +32,8 @@ mutation DeletePost($input: DeletePost!) {
 `;
 
 function EditPostModal({ post, token, refetch, onClose }) {
+  const navigate = useNavigate();
+
   const cdnBaseUrl = 'https://cdn.wheeler-network.com/';
   const [title, setTitle] = useState(post.title);
   const [content, setContent] = useState(post.text);
@@ -90,7 +93,7 @@ function EditPostModal({ post, token, refetch, onClose }) {
     );
   };
 
-  const handleSubmit = async (publish) => {
+  const handleSubmit = async (publish, preview) => {
     setLoading(true);
     setError(null);
 
@@ -135,7 +138,12 @@ function EditPostModal({ post, token, refetch, onClose }) {
 
       if (refetch) refetch();
 
-      onClose();
+      if (preview == false) {
+        onClose();
+      } else {
+        // console.log(data?.editPost);
+        return data?.editPost;
+      }
     } catch (err) {
       console.error("Update error:", err);
       setError("Failed to update post. Please try again.");
@@ -144,10 +152,19 @@ function EditPostModal({ post, token, refetch, onClose }) {
     }
   };
 
+  const handlePreview = async () => {
+    const previewPost = await handleSubmit(false, true)
+
+    sessionStorage.setItem("returnToModal", "true");
+    sessionStorage.setItem("returnPost", JSON.stringify(previewPost));
+
+    navigate('/preview', { state: { post: previewPost, returnToModal: true } });
+  };
+
   const handleDelete = async () => {
     const confirmed = window.confirm("Are you sure you want to delete this post?");
     if (!confirmed) return;
-    
+
     setLoading(true);
     setError(null);
 
@@ -269,19 +286,24 @@ function EditPostModal({ post, token, refetch, onClose }) {
         {/* Modal Footer */}
         <div className="modal-footer">
           <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
-              onClick={handleDelete}
+              onClick={() => handlePreview()}
               disabled={loading}>
-            Delete
+            Preview
           </button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
-              onClick={() => handleSubmit(false)}
+              onClick={() => handleSubmit(false, false)}
               disabled={loading}>
             Update
           </button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
-              onClick={() => handleSubmit(true)}
+              onClick={() => handleSubmit(true, false)}
               disabled={loading}>
             Publish
+          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
+              onClick={handleDelete}
+              disabled={loading}>
+            Delete
           </button>
           <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
               onClick={onClose}>

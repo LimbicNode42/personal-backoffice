@@ -5,6 +5,20 @@ import React, {useState, useEffect} from 'react';
 const BlogList = ({token, loading, error, data, refetch}) => {
     const [selectedPost, setSelectedPost] = useState(null);
 
+    useEffect(() => {
+      const shouldReturn = sessionStorage.getItem("returnToModal");
+      const postData = sessionStorage.getItem("returnPost");
+    
+      if (shouldReturn && postData) {
+        const parsedPost = JSON.parse(postData);
+        setSelectedPost(parsedPost);
+    
+        // Clean up so modal doesn't reopen on future visits
+        sessionStorage.removeItem("returnToModal");
+        sessionStorage.removeItem("returnPost");
+      }
+    }, []);
+
     // Refetch data when the token is set
     useEffect(() => {
       if (token) {
