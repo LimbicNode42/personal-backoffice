@@ -1,24 +1,19 @@
 import React from 'react';
-import { useNavigate, useLocation, handleBack } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import './PreviewPost.css';
 
 function PreviewPost() {
     const { state } = useLocation();
-    const navigate = useNavigate();
     const post = state?.post;
 
-    const handleBack = () => {
-        navigate(-1);
-      };
-
   return (
-    <div className="prose max-w-none">
-        <div>
+    <div className="prose max-w-none centered-box">
+        <div className='center-content'>
             <h1>{post?.title}</h1>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-2">
+        <div className="flex flex-wrap gap-2 mt-2 center-content">
             {post?.tags.map((tag, index) => (
                 <span
                 key={index}
@@ -31,7 +26,7 @@ function PreviewPost() {
 
         <hr></hr>
 
-        <div>
+        <div className='left-content'>
             <ReactMarkdown>{post?.text}</ReactMarkdown>
         </div>
     </div>
