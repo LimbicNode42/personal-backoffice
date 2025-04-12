@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link, Routes, BrowserRouter } from 'rea
 import Blog from './blog/Blog';
 import ProtectedRoute from './auth/Protect'
 import PreviewPost from './blog/PreviewPost';
+import Datasets from './datasets/Datasets';
 
 function App() {
   return (
@@ -19,6 +20,10 @@ function App() {
                 className="text-gray-900 text-lg px-4 py-1 rounded hover:bg-gray-200 no-underline">
                 Blog
               </Link>
+              <Link to="/datasets" 
+                className="text-gray-900 text-lg px-4 py-1 rounded hover:bg-gray-200 no-underline">
+                Datasets
+              </Link>
             </li>
           </ul>
         </nav>
@@ -27,6 +32,7 @@ function App() {
           <Routes>
             <Route path="/" element={<ProtectedRoute><Blog /></ProtectedRoute>} />
             <Route path="/blog-post-preview" element={<ProtectedRoute><PreviewPost /></ProtectedRoute>} />
+            <Route path="/datasets" element={<ProtectedRoute><Datasets /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>
