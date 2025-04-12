@@ -145,6 +145,9 @@ function EditPostModal({ post, token, refetch, onClose }) {
   };
 
   const handleDelete = async () => {
+    const confirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!confirmed) return;
+    
     setLoading(true);
     setError(null);
 
