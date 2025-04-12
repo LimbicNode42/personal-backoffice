@@ -1,32 +1,35 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import './PreviewPost.css';
 
 function PreviewPost() {
     const { state } = useLocation();
     const post = state?.post;
 
   return (
-    <div className="prose max-w-none centered-box">
-        <div className='center-content'>
+    <div className="prose max-w-none w-[50vw] mx-auto flex flex-col items-center">
+        {/* Centered title */}
+        <div className="text-center px-4 w-full">
             <h1>{post?.title}</h1>
         </div>
 
-        <div className="flex flex-wrap gap-2 mt-2 center-content">
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mt-2 justify-center px-4 w-full">
             {post?.tags.map((tag, index) => (
-                <span
+            <span
                 key={index}
                 className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full"
-                >
+            >
                 {tag}
-                </span>
+            </span>
             ))}
         </div>
 
-        <hr></hr>
+        {/* Divider */}
+        <hr className="w-full border-t border-gray-300 my-4" />
 
-        <div className='left-content'>
+        {/* Markdown content */}
+        <div className="text-left px-4 w-full break-words">
             <ReactMarkdown>{post?.text}</ReactMarkdown>
         </div>
     </div>

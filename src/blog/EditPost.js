@@ -1,4 +1,3 @@
-import './EditPost.css'
 import React, {useState, useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import * as Dialog from "@radix-ui/react-dialog";
@@ -198,80 +197,82 @@ function EditPostModal({ post, token, refetch, onClose }) {
 
   return (
     <Dialog.Root open={!!post} onOpenChange={onClose}>
-      <Dialog.Overlay className="radix-overlay" />
-      <Dialog.Content className="radix-content">
-        {/* Modal Header */}
-        <div className="modal-header">
+      {/* Overlay */}
+      <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
+
+      {/* Content */}
+      <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[90vw] bg-white p-5 rounded-lg shadow-lg z-50 overflow-hidden">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-gray-300 pb-2">
           <Dialog.Title className="text-lg font-semibold">Edit Blog Post</Dialog.Title>
           <Dialog.Close className="cursor-pointer">
             <X size={24} onClick={onClose} />
           </Dialog.Close>
         </div>
 
-        {/* Modal Body */}
-        <div className="modal-body">
-          {/* Blog Post Title */}
+        {/* Body */}
+        <div className="mt-5 max-h-[60vh] overflow-y-auto pr-2 space-y-6">
+          
+          {/* Title */}
           <div>
-            <label className="block text-sm font-medium">Title: </label>
-            <input 
-              type="text" 
-              className="border p-2 w-full rounded" 
+            <label className="block text-sm font-medium">Title</label>
+            <input
+              type="text"
+              className="border p-2 w-full rounded"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <br></br>
 
-          {/* Blog Post Content */}
+          {/* Content */}
           <div>
             <label className="block text-sm font-medium">Content</label>
-            <textarea 
-              className="blog-textarea" 
+            <textarea
+              className="w-full h-[150px] border border-gray-300 p-2 rounded resize-y"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
           </div>
-          <br></br>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium">Attach Images: </label>
-            <input 
-              type="file" 
-              multiple 
-              accept="image/*" 
+            <label className="block text-sm font-medium">Attach Images</label>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
               className="border p-2 w-full rounded"
               onChange={handleImageUpload}
             />
           </div>
-          <br></br>
 
           {/* Image Previews */}
-          <div className="image-preview-container">
-            {images.filter((img) => !img.markedForDelete).map((img, index) => (
-              <div key={img.url} className="image-wrapper">
-                <button 
-                  className="remove-button" 
+          <div className="flex flex-wrap gap-4">
+            {images.filter(img => !img.markedForDelete).map((img, index) => (
+              <div key={img.url} className="relative inline-block">
+                <button
+                  type="button"
                   onClick={() => removeImage(img.url)}
+                  className="absolute top-1 left-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                 >
-                  ❌
+                  ×
                 </button>
                 <img
                   src={img.url}
                   title={img.url}
                   alt={`Attachment ${index + 1}`}
-                  style={{ maxWidth: '100%', height: 'auto' }}
+                  className="w-[100px] h-[100px] object-cover border border-gray-300 rounded"
                 />
               </div>
             ))}
           </div>
-          <br></br>
 
-          {/* Multi-Select Dropdown for Tags */}
+          {/* Tags */}
           <div>
-            <label className="block text-sm font-medium">Tags</label><br></br>
-            <select 
-              multiple 
+            <label className="block text-sm font-medium">Tags</label>
+            <select
+              multiple
               className="border p-2 w-full rounded"
               value={selectedTags}
               onChange={handleTagSelection}
@@ -283,30 +284,40 @@ function EditPostModal({ post, token, refetch, onClose }) {
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="modal-footer">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
-              onClick={() => handlePreview()}
-              disabled={loading}>
+        {/* Footer */}
+        <div className="flex flex-wrap justify-end gap-2 border-t border-gray-300 pt-4 mt-4">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => handlePreview()}
+            disabled={loading}
+          >
             Preview
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
-              onClick={() => handleSubmit(false, false)}
-              disabled={loading}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => handleSubmit(false, false)}
+            disabled={loading}
+          >
             Update
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
-              onClick={() => handleSubmit(true, false)}
-              disabled={loading}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={() => handleSubmit(true, false)}
+            disabled={loading}
+          >
             Publish
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
-              onClick={handleDelete}
-              disabled={loading}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={handleDelete}
+            disabled={loading}
+          >
             Delete
           </button>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons" 
-              onClick={onClose}>
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={onClose}
+          >
             Close
           </button>
         </div>

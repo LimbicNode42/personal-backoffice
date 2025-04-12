@@ -1,4 +1,3 @@
-import './ShowPosts.css';
 import EditPostModal from './EditPost';
 import React, {useState, useEffect} from 'react';
 
@@ -30,20 +29,34 @@ const BlogList = ({token, loading, error, data, refetch}) => {
     if (error) return <p>Error: {error.message}</p>;
   
     return (
-      <div className="blog-container">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5 p-5">
         {data.posts.map((post) => (
-          <div key={post.id} className="blog-card cursor-pointer" onClick={() => setSelectedPost(post)}>
-            <h3 className="blog-title">{post.title}</h3>
-            <span className={post.published ? "status published" : "status draft"}>
+          <div
+            key={post.id}
+            className="p-5 rounded-lg shadow-md bg-white transition-transform duration-200 hover:-translate-y-1 cursor-pointer"
+            onClick={() => setSelectedPost(post)}
+          >
+            <h3 className="text-2xl font-semibold mb-2">{post.title}</h3>
+            <span
+              className={`font-bold mt-2 block ${
+                post.published ? "text-green-600" : "text-red-600"
+              }`}
+            >
               {post.published ? "Published" : "Draft"}
             </span>
           </div>
         ))}
 
-        {/* ✅ Open modal when a post is clicked */}
         {selectedPost && (
-            <EditPostModal post={selectedPost} token={token} loading={loading}
-              error={error} data={data} refetch={refetch} onClose={() => setSelectedPost(null)} />
+          <EditPostModal
+            post={selectedPost}
+            token={token}
+            loading={loading}
+            error={error}
+            data={data}
+            refetch={refetch}
+            onClose={() => setSelectedPost(null)}
+          />
         )}
       </div>
     );

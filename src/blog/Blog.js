@@ -1,5 +1,3 @@
-// src/components/Blog.js
-import './Blog.css';
 import CreatePostModal from './CreatePost';
 import BlogList from './ShowPosts';
 import React from 'react';
@@ -28,16 +26,19 @@ function Blog() {
   const { loading, error, data, refetch } = useQuery(GET_POSTS);
 
   return (
-    <div className='Blog'>
-      <header className="Blog-header">
-        <h2>Blog</h2>
+    <div className="text-center">
+      <header className="flex flex-col justify-center items-center">
+        <h2 className="text-2xl font-semibold">Blog</h2>
 
-        <button 
-          onClick={() => setIsOpen(true)} 
-          className="bg-green-500 text-white px-4 py-2 rounded"
+        <button
+          onClick={() => setIsOpen(true)}
+          className="bg-green-500 text-white px-4 py-2 rounded mt-4"
         >
           Create Post
         </button>
+
+        {/* Avatar/Image Example */}
+        {/* <img src="..." alt="..." className="rounded-full h-[25vmin]" /> */}
 
         <BlogList token={token} loading={loading} error={error} data={data} refetch={refetch} />
 

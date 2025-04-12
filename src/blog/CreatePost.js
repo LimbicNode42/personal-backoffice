@@ -1,4 +1,3 @@
-import "./CreatePost.css"
 import React from 'react';
 import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
@@ -81,47 +80,50 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
   
     return (
       <Dialog.Root open={open} onOpenChange={onOpenChange}>
-        <Dialog.Overlay className="radix-overlay" />
-        <Dialog.Content className="radix-content">
-          {/* Modal Header */}
-          <div className="modal-header">
+        {/* Overlay */}
+        <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
+
+        {/* Modal Content */}
+        <Dialog.Content className="fixed top-1/2 left-1/2 w-[90%] h-[80%] -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg z-50 flex flex-col">
+
+          {/* Header */}
+          <div className="flex justify-between items-center border-b border-gray-300 pb-2">
             <Dialog.Title className="text-lg font-semibold">Create Blog Post</Dialog.Title>
             <Dialog.Close className="cursor-pointer">
               <X size={24} />
             </Dialog.Close>
           </div>
-  
-          {/* Modal Body */}
-          <div className="modal-body">
+
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto py-2">
             <form className="space-y-4">
-              {/* Blog Post Title */}
+
+              {/* Title */}
               <div>
-                <label className="block text-sm font-medium">Title: </label>
+                <label className="block text-sm font-medium">Title</label>
                 <input 
                   type="text" 
-                  className="border p-2 w-full rounded" 
+                  className="border p-2 w-full rounded"
                   placeholder="Enter blog title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-              <br></br>
-  
-              {/* Blog Post Content */}
+
+              {/* Content */}
               <div>
                 <label className="block text-sm font-medium">Content</label>
                 <textarea 
-                  className="blog-textarea" 
+                  className="w-full h-[200px] p-2 border border-gray-300 rounded resize-y"
                   placeholder="Write your blog post here..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
               </div>
-              <br></br>
-  
+
               {/* Image Upload */}
               <div>
-                <label className="block text-sm font-medium">Attach Images: </label>
+                <label className="block text-sm font-medium">Attach Images</label>
                 <input 
                   type="file" 
                   multiple 
@@ -130,26 +132,30 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
                   onChange={handleImageUpload}
                 />
               </div>
-              <br></br>
-  
+
               {/* Image Previews */}
-              <div className="image-preview-container">
+              <div className="flex flex-wrap gap-4 mt-2">
                 {images.map((img, index) => (
-                  <div key={img.url} className="image-wrapper">
+                  <div key={img.url} className="relative inline-block">
                     <button 
-                      className="remove-button" 
+                      className="absolute top-1 left-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                       onClick={() => removeImage(img.url)}
+                      type="button"
                     >
-                      ❌
+                      ×
                     </button>
-                    <img src={img.url} alt={`upload-${index}`} className="image-preview" />
+                    <img 
+                      src={img.url} 
+                      alt={`upload-${index}`} 
+                      className="w-[100px] h-[100px] object-cover border border-gray-300 rounded" 
+                    />
                   </div>
                 ))}
               </div>
 
-              {/* Multi-Select Dropdown for Tags */}
+              {/* Tags */}
               <div>
-                <label className="block text-sm font-medium">Tags</label><br></br>
+                <label className="block text-sm font-medium">Tags</label>
                 <select 
                   multiple 
                   className="border p-2 w-full rounded"
@@ -163,11 +169,11 @@ function CreatePostModal({ token, open, onOpenChange, refetch }) {
               </div>
             </form>
           </div>
-  
-          {/* Modal Footer */}
-          <div className="modal-footer">
+
+          {/* Footer */}
+          <div className="flex justify-end border-t border-gray-300 pt-2">
             <button 
-              className="bg-blue-500 text-white px-4 py-2 rounded inline-buttons"
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
               onClick={handleSubmit}
               disabled={loading}
             >
